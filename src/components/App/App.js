@@ -1,37 +1,33 @@
 import React from 'react';
 import './App.css';
-
 import BusinessList from '../BusinessList/BusinessList.js';
 import SearchBar from '../SearchBar/SearchBar.js';
-
-const business = {
-  imageSrc: './pizza.jpg',
-  name: 'MarginOtto Pizzeria',
-  address: '1010 Paddington Way',
-  city: 'Bordertown',
-  state: 'NY',
-  zipCode: '10101',
-  category: 'Italian',
-  rating: 4.5,
-  reviewCount: 90
-};
-
-const businesses = [
-  business,
-  business,
-  business,
-  business,
-  business,
-  business
-];
+import Yelp from '../../util/Yelp.js'
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      businesses: []
+    };
+
+    this.searchYelp = this.searchYelp.bind(this);
+  }
+
+  searchYelp(term, location, sortBy) {
+    //console.log(`Searching Yelp with term: ${term}, location: ${location}, sort by: ${sortBy}`);
+    Yelp.search(term, location, sortBy).then(businesses => {
+      this.setState({businesses: businesses});
+    });
+  }
+
   render() {
     return (
       <div className="App">
         <h1>Welp</h1>
-        <SearchBar />
-        <BusinessList businesses={businesses} />
+        <SearchBar searchYelp={this.searchYelp} />
+        <BusinessList businesses={this.state.businesses} />
       </div>
     );
   }
